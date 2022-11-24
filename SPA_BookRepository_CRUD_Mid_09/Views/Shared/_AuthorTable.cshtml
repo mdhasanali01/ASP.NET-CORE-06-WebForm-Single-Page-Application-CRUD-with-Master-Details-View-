@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Author>
+@{
+    int? id = (int?)ViewData["id"];
+    
+}
+<table class="table table-bordered table-striped" id="authorTable">
+    <thead>
+        <tr class="text-center bg-light">
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuthorName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="author_tr_@item.AuthorId" class="@(id.HasValue && id == item.AuthorId ? "bg-info": "")">
+                <td><button type="button" class="btn btn-sm select @(id.HasValue && id == item.AuthorId ? "disabled": "")" data-author-id="@item.AuthorId" >Select</button></td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AuthorName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+               <td>
+                        <button type="button" class="btn btn-primary btn-sm rounded-2 edit" data-db-type="author" data-db-action="edit" data-author-id="@item.AuthorId" data-controller-action="EditAuthor"><i class="bi bi-pencil"></i>Edit</button>
+                    <button type="button" class="btn btn-danger btn-sm rounded-2 del" data-db-type="author" data-db-action="del" data-author-id="@item.AuthorId" data-controller-action="DeleteAuthor"><i class="bi bi-trash"></i>Delete</button>
+                    </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

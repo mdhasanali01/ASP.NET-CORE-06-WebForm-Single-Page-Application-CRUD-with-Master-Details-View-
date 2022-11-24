@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Book>
+ <table class="table table-bordered table-striped" id="bookTable">
+        <thead class="">
+            <tr class="text-center bg-light">
+                <th>Image</th>
+                <th>Book Name</th>
+                <th>Publish Date</th>
+                <th>Price</th>
+                <th>Available?</th>
+                <th>Topic</th>
+                <th>Publisher Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var p in Model)
+            {
+                <tr id="book_tr_@p.BookId">
+                    <td style="width:50px"><img src="~/Pictures/@p.Picture" style="width:40px" class="img-thumbnail" /></td>
+                    <td>@p.BookName</td>
+                    <td>@p.PublishDate.ToShortDateString()</td>
+                    <td>@p.Price.ToString("0.00")</td>
+                    <td>@(p.Available ? "Yes": "No")</td>
+                    <td>@p.Topic</td>
+                    <td>@p.Publisher.PublisherName</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm rounded-2 edit" data-db-type="book" data-db-action="edit" data-book-id="@p.BookId" data-controller-action="EditBook"><i class="bi bi-pencil"></i>Edit</button>
+                    <button type="button" class="btn btn-danger btn-sm rounded-2 del" data-db-type="book" data-db-action="del" data-book-id="@p.BookId" data-controller-action="DeleteBook"><i class="bi bi-trash"></i>Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+

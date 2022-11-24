@@ -1,0 +1,602 @@
+﻿@model DataViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="row m-1">
+    <div class="col-12 border-end table-striped">
+        <h1 class="col-12 text-center" style="background-color: #e3f2fd;">Publishers</h1>
+        <div class="d-flex justify-content-end mb-1">
+            <button class="btn btn-primary btn-sm" id="addpublisher"><span class="bi bi-plus"></span> Add</button>
+        </div>
+        @await Html.PartialAsync("__PublisherTable", Model.Publishers)
+    </div>
+    <div class="col-12 border-end">
+        <h1 class="col-12 text-center " style="background-color: #e3f2fd;">Books</h1>
+        <div class="d-flex justify-content-end mb-1">
+            <button class="btn btn-primary btn-sm" id="addbook"><span class="bi bi-plus"></span> Add</button>
+        </div>
+        @await Html.PartialAsync("_BookTable", Model.Books)
+    </div>
+    <div class="col-6 border-end">
+        <h1 class="col-12 text-center " style="background-color: #e3f2fd;">Authors</h1>
+        <div class="d-flex justify-content-end mb-1">
+            <button class="btn btn-primary btn-sm" id="addauthor"><span class="bi bi-plus"></span> Add</button>
+        </div>
+        @await Html.PartialAsync("_AuthorTable", Model.Authors, new ViewDataDictionary(this.ViewData) { { "id", Model.SelectedAuthorId } })
+    </div>
+    <div class="col-6 border-end">
+        <h1 class="col-12 text-center " style="background-color: #e3f2fd;">Author Books</h1>
+        <div class="d-flex justify-content-end mb-1">
+            <button class="btn btn-primary btn-sm" id="addauthorbook"><span class="bi bi-plus"></span> Add</button>
+        </div>
+        <div id="oidiv">
+            @await Html.PartialAsync("_AuthorBookTable", Model.AuthorBooks)
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" id="modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="mtitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mbody">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="save" class="btn btn-primary" form="f">Insert</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" id="delModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title">Confirm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to delete this item?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="deleteItem">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="position-absolute bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toastNotice" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto" id="toasthead">Bootstrap</strong>
+
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastbody">
+            Hello
+        </div>
+    </div>
+</div>
+@section styles{
+    <link rel="stylesheet" href="~/libs/picker/css/bootstrap-datepicker.standalone.css" />
+}
+    @section scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="~/libs/picker/js/bootstrap-datepicker.js"></script>
+    <script>
+        var myModal = new bootstrap.Modal(document.getElementById('modal'));
+        var delModal = new bootstrap.Modal(document.getElementById('delModal'));
+        var myAlert = document.getElementById('toastNotice');
+        var bsAlert = new bootstrap.Toast(myAlert);
+        var itemToWorkWith;
+
+        $(() => {
+            $(".date").datepicker({
+                format: 'yyyy-mm-dd'
+            });
+            $(document).on("click", "button.select", function() {
+                var authorId = $(this).data("author-id");
+                console.log(authorId)
+                var previousSelected = $("tr.bg-info")
+                previousSelected.removeClass("bg-info");
+                previousSelected.find("button.btn").removeClass("disabled");
+                
+                $(this).closest("tr").addClass("bg-info");
+                $(this).closest("tr").find("button.btn").addClass("disabled");
+                $.ajax({
+                    type: "POST",
+                    url: "/SPA/GetSelectedAuthorBooks/" + authorId,
+                    success: r => {
+                        $("#oidiv").html(r);
+                    }
+                })
+            });
+        });
+        $(document).on('click', 'button.edit', function() {
+            var dbType = $(this).data("db-type");
+            var dbAction = $(this).data("db-action");
+            var controllerAction = $(this).data("controller-action");
+            var id = $(this).data(`${dbType}-id`);
+            if (dbType == 'authorbook') {
+                    var oid = $(this).data("author-id");
+                    var pid = $(this).data("book-id");
+                    $.ajax({
+                        type: "GET",
+                        url: `/SPA/${controllerAction}/?oid=${oid}&pid=${pid}`,
+                        success: r => {
+                            $("#mbody").html(r);
+                            $("#mtitle").html(`Edit ${dbType}`);
+
+                            myModal.show();
+                            var f = $("#f");
+
+                            $.validator.unobtrusive.parse(f);
+                            if (dbType == 'book') {
+                                $(".date").datepicker({
+                                    format:'yyyy-mm-dd'
+                                });
+                            }
+                        }
+                    });
+                }
+                else {
+                    $.ajax({
+                        type: "GET",
+                        url: `/SPA/${controllerAction}/${id}`,
+                        success: r => {
+                            $("#mbody").html(r);
+                            $("#mtitle").html(`Edit ${dbType}`);
+
+                            myModal.show();
+                            var f = $("#f");
+                            $.validator.unobtrusive.parse(f);
+                            if (dbType == 'book') {
+                                $(".date").datepicker({
+                                    format:'yyyy-mm-dd'
+                                });
+                            }
+                        }
+
+                    });
+                }
+            });
+        $(document).on('click', 'button.del', function() {
+            itemToWorkWith = $(this);
+            delModal.show();
+        });
+         $('#deleteItem').click(() => {
+                delModal.hide();
+                var dbType = itemToWorkWith.data("db-type");
+                var dbAction = itemToWorkWith.data("db-action");
+                var controllerAction = itemToWorkWith.data("controller-action");
+                var id = itemToWorkWith.data(`${dbType}-id`);
+                console.log(`${dbType} ${dbAction} ${controllerAction}`);
+                console.log(id);
+                console.log($(`#${dbType}_tr_${id}`))
+                $(`#${dbType}_tr_${id}`).remove();
+                if(dbType == 'authorbook'){
+                    var aid = itemToWorkWith.data("author-id");
+                    var bid = itemToWorkWith.data("book-id");
+                    $.ajax({
+                        type: 'POST',
+                        url: `/SPA/${controllerAction}/?aid=${aid}&bid=${bid}`,                       
+                        success: r => {
+                            if (r.success == true) {
+                                $("#toasthead").html("Success");
+                                $("#toastbody").html(r.message);
+
+                                bsAlert.show();
+                                $(`#${dbType}_tr_${aid}_${bid}`).remove();
+                            }
+                            else {
+                                $("#toasthead").html("Failed");
+                                $("#toastbody").html(r.message);
+
+                                bsAlert.show();
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    $.ajax({
+                        type: 'POST',
+                        url: `/SPA/${controllerAction}/${id}`,
+                        success: r => {
+                            if (r.success == true) {
+                                $("#toasthead").html("Success");
+                                $("#toastbody").html(r.message);
+
+                                bsAlert.show();
+                                $(`#${dbType}_tr_${id}`).remove();
+                            }
+                            else {
+                                $("#toasthead").html("Failed");
+                                $("#toastbody").html(r.message);
+
+                                bsAlert.show();
+                            }
+                        }
+                    });
+                }
+            });
+
+        $(document).on("click", "button.deloi-insert", function() {
+            if ($("button.deloi-insert").length < 2) return;
+            $(this).parent().parent().remove();
+        })
+        $("#addpublisher").click(() => {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CreatePublisher", "SPA")",
+                success: r => {
+                    $("#mbody").html(r);
+                    $("#mtitle").html("Add Publisher");
+
+                    myModal.show();
+                    var f = $("#f");
+                    console.log(f);                    
+                    $.validator.unobtrusive.parse(f);
+                }
+
+            });
+        });
+        $("#addbook").click(() => {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CreateBook", "SPA")",
+                success: r => {
+                    $("#mbody").html(r);
+                    $("#mtitle").html("Add Book");
+
+                    myModal.show();
+                    var f = $("#f");
+                    console.log(f);
+                    $.validator.unobtrusive.parse(f);
+                    $(".date").datepicker({dateFormat: 'yyyy-dd-mm'});
+                }
+
+            });
+        });
+        $("#addauthor").click(() => {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("CreateAuthor", "SPA")",
+                success: r => {
+                    $("#mbody").html(r);
+                    $("#mtitle").html("Add Author");
+
+                    myModal.show();
+                    var f = $("#f");
+                    $.validator.unobtrusive.parse(f);
+
+                }
+
+            });
+        });
+         $("#addauthorbook").click(function () {
+                var id = $('button.select.disabled').data("author-id")
+                $.ajax({
+                    type: "GET",
+                    url: "/SPA/CreateAuthorBook/" + id,
+                    success: r => {
+                        $("#mbody").html(r);
+                        $("#mtitle").html("Add Author Book");
+
+                        myModal.show();
+                        var f = $("#f");
+                        console.log(f);
+                        $.validator.unobtrusive.parse(f);
+                    }
+
+                });
+            })
+        $("#save").click(function() {
+            var button = $(this);
+            var isValid = $("#f").valid();
+            if (isValid == true) {
+                var dbType = $("#f").data("db-type");
+                var dbAction = $("#f").data("db-action");
+                var controllerAction = $("#f").data("controller-action");
+                console.log(`${dbType} ${dbAction} ${controllerAction}`);
+                var data = createData(dbType, dbAction);
+                if (dbType == "publisher") {
+
+                    $.ajax({
+                        url: `/SPA/${controllerAction}`,
+                        type: "POST",
+                        data: data,
+                        dataType: "json",
+                        success: r => {
+                            if (dbAction == "insert") {
+                                $("#toasthead").html("Success");
+                                $("#toastbody").html("Data inserted successfully");
+                                myModal.hide();
+                                bsAlert.show();
+                                addToTable(dbType, r);
+
+                            }
+                            if (dbAction == "edit") {
+                                $("#toasthead").html("Success");
+                                $("#toastbody").html("Data saved successfully");
+                                myModal.hide();
+                                bsAlert.show();
+
+
+                                replaceRow(dbType, `publisher_tr_${r.publisherId}`, r);
+
+                            }
+
+                        },
+                        error: function(err) {
+                            alert(err.statusText);
+                            $("#toasthead").html("Failed");
+                            $("#toastbody").html("Failed to insert data");
+
+                            bsAlert.show();
+                        }
+                    });
+                }
+                if (dbType == "book") {
+                    $.ajax({
+                        url: `/SPA/${controllerAction}`,
+                        type: "POST",
+                        contentType: false, 
+                        processData: false,
+                        data: data,
+                        success: function(result) {
+                            console.log(result);
+                            if (dbAction == "insert") {
+                                $("#toastheader").html("Success");
+                                $("#toastbody").html("Data inserted successfully");
+                                myModal.hide();
+                                bsAlert.show();
+                                if (dbAction == 'insert') addToTable(dbType, result);
+
+                            }
+                            if (dbAction == "edit") {
+                                $("#toasthead").html("Success");
+                                $("#toastbody").html("Data saved successfully");
+                                myModal.hide();
+                                bsAlert.show();
+
+
+                                replaceRow(dbType, `book_tr_${result.bookId}`, result);
+                            }
+
+                            myModal.hide();
+                        },
+
+
+                        error: function(err) {
+                            alert(err.statusText);
+                            $("#toasthead").html("Failed");
+                            $("#toastbody").html("Failed to insert data");
+                            bsAlert.show();
+                        }
+                    });
+                }
+                if (dbType == "author") {
+                    var isValid = $("#f").valid();
+                    if (isValid == true) {
+                        var dbType = $("#f").data("db-type");
+                        var dbAction = $("#f").data("db-action");
+                        var controllerAction = $("#f").data("controller-action");
+                        console.log(`${dbType} ${dbAction} ${controllerAction}`);
+                        var data = $("#f").serialize();
+                        $.ajax({
+                            type: "POST",
+                            url: `/SPA/${controllerAction}`,
+                            data: data,
+                            success: r => {
+                                console.log(r);
+                                $("#toasthead").html("Success");
+                                $("#toastbody").html("Data inserted successfully");
+                                myModal.hide();
+                                bsAlert.show();
+                                if (dbAction == 'insert') addToTable(dbType, r);
+                                if (dbAction == "edit") {
+                                    $("#toasthead").html("Success");
+                                    $("#toastbody").html("Data saved successfully");
+                                    myModal.hide();
+                                    bsAlert.show();
+                                    replaceRow(dbType, `author_tr_${r.authorId}`, r);
+                                }
+                            }
+
+                        });
+                    }
+                }
+                if (dbType == "authorbook") {
+                        var isValid = $("#f").valid();
+                        console.log(isValid)
+                        if (isValid == true) {
+                            var dbType = $("#f").data("db-type");
+                            var dbAction = $("#f").data("db-action");
+                            var controllerAction = $("#f").data("controller-action");
+                            console.log(`${dbType} ${dbAction} ${controllerAction}`);
+                            var data = $("#f").serialize();
+                            $.ajax({
+                                type: "POST",
+                                url: `/SPA/${controllerAction}`,
+                                data: data,
+                                success: r => {
+                                    console.log(r);
+                                    $("#toasthead").html("Success");
+                                    $("#toastbody").html("Data inserted successfully");
+                                    myModal.hide();
+                                    bsAlert.show();
+                                    if (dbAction == 'insert') addToTable(dbType, r);
+                                    if (dbAction == "edit") {
+                                        $("#toasthead").html("Success");
+                                        $("#toastbody").html("Data saved successfully");
+                                        myModal.hide();
+                                        bsAlert.show();
+                                        replaceRow(dbType, `authorbook_tr_${r.authorId}_${r.bookId}`, r);
+
+                                    }
+
+                                }
+                            });
+                        }
+                    }
+            }
+
+
+        });
+        $(document).on("click", "button#addItemForm", () => {
+            $.ajax({
+                type: 'GET',
+                url: '/SPA/CreateItem',
+                success: r => {
+
+                    $("div#items").append(r);
+
+                }
+            })
+        });
+        function createData(dbType, dbAction) {
+            if (dbType == "publisher") {
+                var obj = {
+                    PublisherName: $("#PublisherName").val(),
+                    Address: $("#Address").val(),
+                    Email: $("#Email").val()
+                };
+                if (dbAction != 'insert') obj.PublisherId = $("#PublisherId").val();
+                return obj;
+            }
+
+            if (dbType == "book") {
+                var formData = new FormData();
+                if (dbAction != 'insert') formData.append("BookId", $("#BookId").val());
+                formData.append("BookName", $("#BookName").val());
+                formData.append("PublishDate", $("#PublishDate").val());
+                formData.append("Price", $("#Price").val());
+                formData.append("Available", document.getElementById("Available").checked);
+                formData.append("Topic", $("#Topic").val());
+                formData.append("PublisherId", $("#PublisherId").val());
+                formData.append("Picture", document.getElementById("Picture").files[0]);
+                return formData;
+            };
+
+        }
+        function replaceRow(dbType, rowid, r) {
+            if (dbType == 'publisher') {
+                $(`#${rowid}`).html(` <td>${r.publisherName}</td>
+                                    <td>${r.address}</td>
+                                    <td>${r.email}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 edit" data-db-type="publisher"  data-db-action="edit" data-publisher-id="${r.publisherId}" data-controller-action="EditPublisher"><i class="bi bi-pencil"></i>Edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm rounded-2 del" data-db-type="publisher"  data-db-action="delete" data-publisher-id="${r.publisherId}" data-controller-action="Deletepublisher"><i class="bi bi-trash" ></i>Delete</button>
+                                    </td>`);
+            }
+            if (dbType == 'book') {
+                console.log($(`#${rowid}`));
+                $(`#${rowid}`).html(`<td style="width:50px"><img src="/Pictures/${r.picture}" style="width:40px" class="img-thumbnail " /></td>
+                                <td>${r.bookName}</td>
+                                <td>${formatDate(new Date(r.publishDate))}</td>
+                                <td>${r.price}</td>
+                                <td>${r.available ? "Yes" : "No"}</td>
+                                <td>${getTopicName(r.topic)}</td>
+                                <td>${r.publisher.publisherName}</td>
+                                <td>
+                                        <button type="button" class="btn btn-primary btn-sm rounded-2 edit" data-db-type="book"  data-db-action="edit" data-book-id="${r.bookId}" data-controller-action="EditBook"><i class="bi bi-pencil"></i>Edit</button>
+                                        <button type="button" class="btn btn-danger btn-sm rounded-2 del" data-db-type="book"  data-db-action="delete" data-book-id="${r.bookId}" data-controller-action="DeleteBook"><i class="bi bi-trash" ></i>Delete</button>
+                                </td>`);
+            }
+            if (dbType == 'author') {
+                        $(`#${rowid}`).html(`<td style="width:50px"><button type="button" class="btn btn-sm select" data-author-id="${r.authorId}" >Select</button</td>
+                                            <td>${r.authorName}</td>
+                                            <td>${r.address}</td>
+                                            <td>
+                                            <button type="button" class="btn btn-primary btn-sm rounded-2 edit" data-db-type="author"  data-db-action="edit" data-author-id="${r.authorId}" data-controller-action="EditAuthor"><i class="bi bi-pencil">Edit</i></button>
+                                            <button type="button" class="btn btn-danger btn-sm rounded-2 del" data-db-type="author"  data-db-action="delete" data-author-id="${r.authorId}" data-controller-action="DeleteAuthor"><i class="bi bi-trash" >Delete</i></button>
+
+                                            </td>`);
+            }
+           
+        }
+        function addToTable(dbType, r) {
+            
+
+            if (dbType == "publisher") {
+                $(`#${dbType}Table tbody`).append(
+                    `<tr id="publisher_tr_${r.publisherId}">
+                                                                             <td>${r.publisherName}</td>
+                                                                             <td>${r.address}</td>
+                                                                             <td>${r.email}</td>
+                                                                                              <td>
+                                                                                            <button type="button" class="btn btn-primary btn-sm rounded-2 edit" data-db-type="publisher"  data-db-action="edit" data-publisher-id="${r.publisherId}" data-controller-action="EditPublisher"><i class="bi bi-pencil"></i>Edit</button>
+                                                                                            <button type="button" class="btn btn-danger btn-sm rounded-2 del" data-db-type="publisher"  data-db-action="delete" data-publisher-id="${r.publisherId}" data-controller-action="DeletePublisher"><i class="bi bi-trash" ></i>Delete</button>
+                                                                                               </td>
+                                  </tr>`);
+            }
+            if (dbType == "book") {
+                $(`#${dbType}Table tbody`).append(
+                    `<tr id="book_tr_${r.bookId}">
+                                                                                <td style="width:50px"><img src="/Pictures/${r.picture}" style="width:40px" class="img-thumbnail" /></td>
+                                                                                    <td>${r.bookName}</td>
+                                                                                    <td>${formatDate(new Date(r.publishDate))}</td>
+                                                                                    <td>${r.price}</td>
+                                                                                    <td>${r.available ? "Yes" : "No"}</td>
+                                                                                    <td>${getTopicName(r.topic)}</td>
+                                                                                    <td>${r.publisher.publisherName}</td>
+                                                                                    <td>
+                                                                                           <button type="button" class="btn btn-primary btn-sm rounded-2 edit" data-db-type="book"  data-db-action="edit" data-book-id="${r.bookId}" data-controller-action="EditBook"><i class="bi bi-pencil"></i>Edit</button>
+                                                                                            <button type="button" class="btn btn-danger btn-sm rounded-2 del" data-db-type="book"  data-db-action="delete" data-book-id="${r.bookId}" data-controller-action="DeleteBook"><i class="bi bi-trash" >Delete</i></button>
+                                                                                    </td>
+                                                                            </tr>`);
+            }
+            if (dbType == "author") {
+                $(`#${dbType}Table tbody`).append(
+                    `<tr id="author_tr_${r.authorId}">
+                                                                <td style="width:50px"><button type="button" class="btn btn-sm select" data-author-id="${r.authorId}" >Select</button</td>
+                                                                <td>${r.authorName}</td>
+                                                                <td>${r.address}</td>
+
+                                                            <td>
+                                                                <button type="button" class="btn btn-primary btn-sm rounded-2 edit" data-db-type="author"  data-db-action="edit" data-author-id="${r.authorId}" data-controller-action="EditAuthor"><i class="bi bi-pencil"></i>Edit</button>
+                                                                <button type="button" class="btn btn-danger btn-sm rounded-2 del" data-db-type="author"  data-db-action="delete" data-author-id="${r.authorId}" data-controller-action="DeleteAuthor"><i class="bi bi-trash" ></i>Delete</button>
+                                                            </td>
+                                            </tr>`);
+            }
+            if (dbType == "authorbook") {
+                $(`#${dbType}Table tbody`).append(
+                    `<tr id="authorbook_tr_${r.authorId}_${r.bookId}">
+                                                                        <td><img src="/Pictures/${r.book.picture}" class="img-thumbnail" style="width:40px" /></td>
+
+                                                                <td>${r.book.bookName}</td>
+                                                                <td>${getTopicName(r.book.topic)}</td>
+                                                                <td>${formatDate(new Date(r.book.publishDate))}</td>
+                                                                
+                                                                <td>
+                                                                                                                                                                          
+                                                                        <button type="button" class="btn btn-danger btn-sm rounded-circle del" data-db-type="authorbook" data-db-action="delete" data-author-id="${r.AuthorId}" data-book-id="${r.BookId}" data-controller-action="DeleteAuthorBook"><i class="bi bi-trash"></i></button>
+                                                                </td>
+                                                        </tr>`);
+
+            }
+
+        }
+        function formatDate(d) {
+            return [
+                d.getFullYear(),
+                (d.getMonth() + 1).toString().padStart(2, '0'),
+                d.getDate().toString().padStart(2, '0')
+            ].join('-');
+        }
+         function getTopicName(topic) {
+            //console.log(status);
+            if (topic == '1') return 'Geograpy';
+            if (topic == '2') return 'Programming';
+            if (topic == '3') return 'DataBase';
+            if (topic == '4') return 'Novel';
+            return '';
+
+        }
+    </script>
+}
+

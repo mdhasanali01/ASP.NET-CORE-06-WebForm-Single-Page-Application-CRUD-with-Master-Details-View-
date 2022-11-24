@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    .container {
+        display: block;
+        width: 97.5vw;
+        margin: 0 auto;
+    }
+
+    .banner {
+        width: 80vw;
+        margin: 15px auto;
+        padding: 15px 30px;
+        border-radius: 3px;
+        background-color: #e3f2fd;
+        color: #000000;
+        display: flex;
+        gap: .5em;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+    }
+</style>
+<section class="container">
+    <div class="banner">
+        <h3>ASP.NET Core Single Page Application Project</h3>
+        <h5>Implemented using JavsScript & jQuery</h5>
+        <h6>Features</h6>
+        <ul class="col-4">
+
+                <li>.NET Core 6.0</li>
+                <li>Vanila JavaScript</li>
+                <li>jQuery</li>
+                <li>Bootstrap 5.2.2</li>
+                <li>Bootstrap-icons 1.9.1</li>
+        </ul>
+    </div>
+     <div class="card-footer">
+        <a asp-action="Index" asp-controller="SPA" class="btn btn-primary">Go to Single Page</a>
+    </div>
+</section>
+
+
+
+

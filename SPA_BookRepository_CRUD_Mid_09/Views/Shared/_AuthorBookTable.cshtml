@@ -1,0 +1,48 @@
+﻿@model IEnumerable<AuthorBook>
+<table class="table table-bordered table-striped" id="authorbookTable">
+    <thead>
+        <tr class="text-center bg-light">
+            <th>Image</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book.BookName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book.Topic)
+            </th>
+             <th>
+                @Html.DisplayNameFor(model => model.Book.PublishDate)
+            </th>
+           @* <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="@($"authorbook_tr_{@item.AuthorId}_{@item.BookId}")">
+                <td>
+                    <img src="/Pictures/@item.Book.Picture" class="img-thumbnail" style="width:40px" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.BookName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.Topic)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.PublishDate)
+                </td>
+              @*  <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>*@
+                <td>
+                   @*<button type="button" class="btn btn-primary btn-sm rounded-circle edit" data-db-type="authorbook" data-db-action="edit" data-author-id="@item.AuthorId" data-book-id="@item.BookId" data-controller-action="EditAuthorBook"><i class="bi bi-pencil"></i></button>*@
+                    <button type="button" class="btn btn-danger btn-sm rounded-circle del" data-db-type="authorbook" data-db-action="delete" data-author-id="@item.AuthorId" data-book-id="@item.BookId" data-controller-action="DeleteAuthorBook"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,92 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = SPA_BookRepository_CRUD_Mid_09
+build_property.RootNamespace = SPA_BookRepository_CRUD_Mid_09
+build_property.ProjectDir = I:\1268484\SPA_BookRepository_CRUD_Mid_09\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = I:\1268484\SPA_BookRepository_CRUD_Mid_09
+build_property._RazorSourceGeneratorDebug = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/Shared/_AuthorBookTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdXRob3JCb29rVGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/Shared/_AuthorTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdXRob3JUYWJsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/Shared/_BookTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Cb29rVGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/Shared/__PublisherTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9fUHVibGlzaGVyVGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_CreateAuthor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9DcmVhdGVBdXRob3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_CreateAuthorBook.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9DcmVhdGVBdXRob3JCb29rLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_CreateBook.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9DcmVhdGVCb29rLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_CreateItem.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9DcmVhdGVJdGVtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_CreatePublisher.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9DcmVhdGVQdWJsaXNoZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_EditAuthor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9FZGl0QXV0aG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_EditAuthorBook.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9FZGl0QXV0aG9yQm9vay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_EditBook.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9FZGl0Qm9vay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/SPA/_EditPublisher.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1BBXF9FZGl0UHVibGlzaGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/1268484/SPA_BookRepository_CRUD_Mid_09/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
